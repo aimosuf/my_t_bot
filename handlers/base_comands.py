@@ -1,7 +1,6 @@
 import telebot
 
 from init_bot import bot
-import random
 
 
 @bot.message_handler(commands=["start"])

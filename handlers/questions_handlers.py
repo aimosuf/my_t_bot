@@ -8,6 +8,15 @@ class Questions(StatesGroup):
     question2 = State()
 
 
+def str_check(message: telebot.types.Message):
+    text = message.text
+    for i in text:
+        if i.isdigit():
+            return False
+    else:
+        return True
+
+
 @bot.message_handler(commands=["game_for_me"])
 def test_start(message: telebot.types.Message):
     bot.send_message(message.chat.id, "Самое главное, что ты должен запомнить: ")
@@ -18,17 +27,19 @@ def test_start(message: telebot.types.Message):
 
 
 @bot.message_handler(state=Questions.start_dialog)
-def correct_answer(message: telebot.types.Message):
-    with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-        data["user_name"] = message.text
-    bot.send_message(message.chat.id, "Привет "+data["user_name"])
+def name_answer(message: telebot.types.Message):
+    if str_check(message):
+        with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
+            data["user_name"] = message.text
+            with open("name.txt", "w", encoding="utf-8") as file:
+                file.write(data["user_name"])
+                name = file.read()
+        bot.send_message(message.chat.id, "привет "+data["user_name"])
+        bot.set_state(message.chat.id, state=Questions.question2)
+    else:
+        bot.send_message(message.chat.id, "пожалуйста, введи своё имя буквами")
 
 
-@bot.message_handler(state=Questions.start_dialog, func=lambda message: isinstance(message.text, str))
-def answer(message: telebot.types.Message):
-    print("str")
-    # with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-    #     data["user_name"] = message.text
-
-
-
+# @bot.message_handler(state=Questions.question2)
+# def first_question(message: telebot.types.Message):
+#     bot.send_message(message.chat.id, )

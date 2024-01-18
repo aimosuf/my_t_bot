@@ -25,3 +25,11 @@ def send_classic(callback: telebot.types.CallbackQuery):
         books = file.read().split("\n")
         books = random.choice(books)
     bot.send_message(callback.message.chat.id, books)
+
+
+@bot.callback_query_handler(func= lambda callback: callback.data == "fentezi")
+def send_fentezi(callback: telebot.types.CallbackQuery):
+    with open("fentezi.txt", encoding="utf") as f_file:
+        f_books = f_file.read().split("\n")
+        f_books = random.choice(f_books)
+    bot.send_message(callback.message.chat.id, f_books)
