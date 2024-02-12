@@ -8,7 +8,8 @@ import random
 def books_call(message: telebot.types.Message):
     books_markup = telebot.util.quick_markup({
         "Классика": {"callback_data": "classic"},
-        "Фентези": {"callback_data": "fentezi"}
+        "Фентези": {"callback_data": "fentezi"},
+        "Детективы":{"callback_data": "detective"}
 
     })
     bot.reply_to(message, "Выберите жанр", reply_markup=books_markup)
@@ -27,9 +28,17 @@ def send_classic(callback: telebot.types.CallbackQuery):
     bot.send_message(callback.message.chat.id, books)
 
 
-@bot.callback_query_handler(func= lambda callback: callback.data == "fentezi")
+@bot.callback_query_handler(func=lambda callback: callback.data == "fentezi")
 def send_fentezi(callback: telebot.types.CallbackQuery):
-    with open("fentezi.txt", encoding="utf") as f_file:
-        f_books = f_file.read().split("\n")
+    with open("fentezi.txt", encoding="utf") as file:
+        f_books = file.read().split("\n")
         f_books = random.choice(f_books)
     bot.send_message(callback.message.chat.id, f_books)
+
+
+@bot.callback_query_handler(func=lambda callback: callback.data == "detective")
+def send_detective(callback: telebot.types.CallbackQuery):
+    with open("detective.txt", encoding="utf") as file:
+        books = file.read().split("\n")
+        books = random.choice(books)
+    bot.send_message(callback.message.chat.id, books)
